@@ -1,0 +1,52 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "awesomebooks-scraper-pro"
+version = "1.0.0"
+description = "Catalog extraction and live New & Used stock monitoring for awesomebooks.com, priced for US shipping: polite, resumable and built to not get blocked."
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "Abu Huraira" }]
+requires-python = ">=3.10"
+dependencies = [
+  "flask>=3.0",
+  "waitress>=3.0",
+  "requests>=2.31",
+  "curl_cffi>=0.7",
+  "beautifulsoup4>=4.12",
+  "openpyxl>=3.1",
+  "defusedxml>=0.7",
+]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Framework :: Flask",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "ruff>=0.5"]
+
+[project.scripts]
+awesomebooks-pro = "awesomebooks_pro.__main__:main"
+
+[tool.setuptools.packages.find]
+include = ["awesomebooks_pro*"]
+
+[tool.setuptools.package-data]
+awesomebooks_pro = ["static/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["live: hits the real awesomebooks.com (opt-in with ABP_LIVE=1)"]
+filterwarnings = ["ignore::DeprecationWarning"]
+
+[tool.ruff]
+line-length = 130
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM"]
+ignore = ["E501", "B008", "SIM105"]

@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+
+# Tooling
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Runtime data (SQLite databases, uploads, exports)
+data/
+*.db
+*.db-shm
+*.db-wal
+*.xlsx
+!tests/fixtures/*.xlsx
+!awesomebooks_pro/static/*.xlsx
+proxies.txt
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

@@ -1,0 +1,13 @@
+.git
+.venv
+venv
+data
+tests
+docs
+*.bat
+.pytest_cache
+.ruff_cache
+__pycache__
+*.pyc
+*.xlsx
+!bookoutlet_pro/static/*.xlsx
