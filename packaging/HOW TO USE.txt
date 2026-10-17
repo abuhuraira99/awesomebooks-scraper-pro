@@ -1,0 +1,71 @@
+AWESOMEBOOKS SCRAPER PRO - HOW TO USE
+=====================================
+
+WHAT THIS PC NEEDS
+  - Windows 10 or 11
+  - An internet connection
+  - Python 3.10 or newer (if it is missing, setup.bat installs it for you)
+
+FIRST TIME ONLY
+  1. Extract this ZIP to a permanent folder with a short path, for example
+     C:\AwesomeBooks Scraper Pro
+     (not the Downloads folder, and do not run it from inside the ZIP).
+  2. Double-click  setup.bat  and wait for "Setup complete" (about 1-2 minutes).
+
+EVERY TIME
+  1. Double-click  run.bat
+  2. A black window opens and the dashboard opens in your browser
+     (http://127.0.0.1:7642).
+  3. KEEP THE BLACK WINDOW OPEN while a job is running.
+     - Closing the browser tab is fine: the job keeps running.
+     - Closing the black window stops the scraper.
+
+PRICES ARE ALWAYS FOR THE UNITED STATES
+  AwesomeBooks asks every new visitor for a shipping country and shows a
+  20%-off pop-up. You never have to deal with either: the scraper picks
+  "Ship to United States" by itself and checks that every page says
+  SHIP TO US and USD before it records a price. Nothing opens on screen.
+
+PAGE 1 - CATALOG EXTRACTOR (scrape a whole section)
+  1. Open the section on awesomebooks.com (a category, Used, Bargain,
+     New & Trending, Bestsellers, a search...) and copy its address.
+  2. Paste it into "Section link" (or click one of the quick buttons).
+  3. Optional: type a number into "Max books" to stop after that many books.
+     Leave it empty to read the whole section, every page.
+  4. Press "Start extraction". When it finishes, the Excel file is saved to
+     your Downloads folder automatically.
+
+PAGE 2 - STOCK MONITOR (check a list of ISBNs)
+  1. Click "Download upload template" on the page (or use
+     ISBN_Upload_Template.xlsx in this folder).
+  2. Put ONE ISBN PER ROW in the "ISBN" column. Delete the example rows.
+     ISBN-10s are fine: they are converted to ISBN-13. Other columns are ignored.
+  3. Drag the file onto the upload box, then press "Start stock check".
+  4. When it finishes, the Excel file is saved to your Downloads folder
+     automatically, in the same row order as your file.
+
+THE EXCEL COLUMNS
+  - ISBN-13 only (AwesomeBooks also shows an ISBN-10; it is not used).
+  - New Available / New Price (USD) / New Qty
+  - Used Available / Used Price (USD) / Used Qty
+    Each condition has its own price and its own stock, exactly as a shopper
+    sees them after clicking the NEW or USED button on the book's page.
+  - Quantity (stock check) = New Qty + Used Qty. 0 = out of stock or not listed.
+  - Quantities are exact. The website shows "20+" to shoppers above 20; the
+    scraper reads the real number from the site's own product data.
+
+GOOD TO KNOW
+  - Only one job runs at a time.
+  - Starting a new run replaces the previous run on that page. Excel files that
+    were already saved are never deleted.
+  - Internet dropped? The job waits and continues by itself.
+  - Power cut or PC restarted? Double-click run.bat again and the job continues
+    automatically from where it stopped.
+  - Pressed Stop? Press Resume to continue.
+  - Speed is about 1 book every 2 seconds on "Balanced" (each book is opened
+    as New and as Used). This is on purpose, so the website never blocks the
+    scraper. Very large sections (Used has ~930,000 books) take days; use
+    "Max books" or a narrower section when you only need part of it.
+  - Prices can differ by a few cents between two visits: AwesomeBooks converts
+    its prices to dollars with a rate that moves slightly. The Excel file holds
+    exactly what the site showed at the moment each book was checked.
