@@ -1,0 +1,122 @@
+{
+ "results": [
+  {
+   "index": "books",
+   "nbHits": 6145081,
+   "nbPages": 50,
+   "hitsPerPage": 20,
+   "page": 0,
+   "hits": [
+    {
+     "objectID": "9781035065516",
+     "isbn13": "9781035065516",
+     "isbn10": "1035065517",
+     "title": "Gruffalo Granny",
+     "author": [
+      "Julia Donaldson",
+      "Axel Scheffler"
+     ],
+     "format": "hardback",
+     "link": "https://www.awesomebooks.com/book/9781035065516/gruffalo-granny",
+     "image": "https://d32vymxhv9fq6b.cloudfront.net/images/books/large/97810/9781035065516.jpg",
+     "new_available": 1,
+     "used_available": 0,
+     "newPrice": 14.06,
+     "usedPrice": null,
+     "inStock": 1,
+     "salesRank": 1
+    },
+    {
+     "objectID": "9781037200076",
+     "isbn13": "9781037200076",
+     "isbn10": "1037200071",
+     "title": "A Court of Splintered Harmony",
+     "author": [
+      "Sarah J. Maas"
+     ],
+     "format": "hardcover",
+     "link": "https://www.awesomebooks.com/book/9781037200076/a-court-of-splintered-harmony",
+     "image": "https://d32vymxhv9fq6b.cloudfront.net/images/books/large/97810/9781037200076.jpg",
+     "new_available": 1,
+     "used_available": 0,
+     "newPrice": 21.28,
+     "usedPrice": null,
+     "inStock": 1,
+     "salesRank": 2
+    },
+    {
+     "objectID": "9780349450612",
+     "isbn13": "9780349450612",
+     "isbn10": "0349450617",
+     "title": "Threshing Day (Limited Deluxe Edition)",
+     "author": [
+      "Rebecca Yarros"
+     ],
+     "format": "hardcover",
+     "link": "https://www.awesomebooks.com/book/9780349450612/threshing-day-limited-deluxe-edition",
+     "image": "https://d32vymxhv9fq6b.cloudfront.net/images/books/large/97803/9780349450612.jpg",
+     "new_available": 1,
+     "used_available": 0,
+     "newPrice": 18.67,
+     "usedPrice": null,
+     "inStock": 1,
+     "salesRank": 3
+    },
+    {
+     "objectID": "9780241769416",
+     "isbn13": "9780241769416",
+     "isbn10": "0241769418",
+     "title": "Lottie Brooks’s Twelve Disasters of Christmas",
+     "author": [
+      "Katie Kirby"
+     ],
+     "format": "hardcover",
+     "link": "https://www.awesomebooks.com/book/9780241769416/lottie-brookss-twelve-disasters-of-christmas",
+     "image": "https://d32vymxhv9fq6b.cloudfront.net/images/books/large/97802/9780241769416.jpg",
+     "new_available": 1,
+     "used_available": 0,
+     "newPrice": 14.68,
+     "usedPrice": null,
+     "inStock": 1,
+     "salesRank": 4
+    },
+    {
+     "objectID": "9781788453912",
+     "isbn13": "9781788453912",
+     "isbn10": "1788453913",
+     "title": "Bunny vs Monkey: Day of the Heroes! (a Phoenix Comic book, from the multi-million-selling creative genius Jamie Smart)",
+     "author": [
+      "Jamie Smart"
+     ],
+     "format": "hardcover",
+     "link": "https://www.awesomebooks.com/book/9781788453912/bunny-vs-monkey-day-of-the-heroes-a-phoenix-comic-book-from-the-multi-million-selling-creative-g",
+     "image": "https://d32vymxhv9fq6b.cloudfront.net/images/books/large/97817/9781788453912.jpg",
+     "new_available": 1,
+     "used_available": 0,
+     "newPrice": 13.46,
+     "usedPrice": null,
+     "inStock": 1,
+     "salesRank": 5
+    },
+    {
+     "objectID": "9781408726600",
+     "isbn13": "9781408726600",
+     "isbn10": "1408726602",
+     "title": "Verity",
+     "author": [
+      "Colleen Hoover"
+     ],
+     "format": "paperback",
+     "link": "https://www.awesomebooks.com/book/9781408726600/verity",
+     "image": "https://d32vymxhv9fq6b.cloudfront.net/images/books/large/97814/9781408726600.jpg",
+     "new_available": 1,
+     "used_available": 1,
+     "newPrice": 10.7,
+     "usedPrice": 5.89,
+     "inStock": 1,
+     "salesRank": 6
+    }
+   ]
+  }
+ ]
+}

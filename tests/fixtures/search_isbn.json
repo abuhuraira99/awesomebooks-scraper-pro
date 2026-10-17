@@ -1,0 +1,31 @@
+{
+ "results": [
+  {
+   "index": "books",
+   "nbHits": 1,
+   "nbPages": 1,
+   "hitsPerPage": 5,
+   "page": 0,
+   "hits": [
+    {
+     "objectID": "9780241003008",
+     "isbn13": "9780241003008",
+     "isbn10": "0241003008",
+     "title": "The Very Hungry Caterpillar",
+     "author": [
+      "Eric Carle"
+     ],
+     "format": "board book",
+     "link": "https://www.awesomebooks.com/book/9780241003008/the-very-hungry-caterpillar",
+     "image": "https://d32vymxhv9fq6b.cloudfront.net/images/books/large/97802/9780241003008.jpg",
+     "new_available": 1,
+     "used_available": 1,
+     "newPrice": 8.12,
+     "usedPrice": 4.99,
+     "inStock": 1,
+     "salesRank": 41
+    }
+   ]
+  }
+ ]
+}
