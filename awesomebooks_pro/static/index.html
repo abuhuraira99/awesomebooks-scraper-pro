@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AwesomeBooks Scraper Pro</title>
+  <meta name="description" content="Catalog extraction and live New &amp; Used stock monitoring for awesomebooks.com, priced for US shipping." />
+  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/app.css" />
+  <script src="/static/theme.js"></script>
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="var(--emerald)" /><stop offset="1" stop-color="var(--gold)" /></linearGradient>
+    </defs>
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></symbol>
+    <symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 2 10 5-10 5L2 7z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></symbol>
+    <symbol id="i-package" viewBox="0 0 24 24"><path d="m16 16 2 2 4-4"/><path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14"/><path d="m7.5 4.27 9 5.15"/><path d="M3.29 7 12 12l8.71-5"/><path d="M12 22V12"/></symbol>
+    <symbol id="i-upload" viewBox="0 0 24 24"><path d="M4 14.9A7 7 0 1 1 15.7 8h1.8a4.5 4.5 0 0 1 2.5 8.2"/><path d="M12 12v9"/><path d="m16 16-4-4-4 4"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4.5v15a1 1 0 0 0 1.5.86l12.5-7.5a1 1 0 0 0 0-1.72L8.5 3.64A1 1 0 0 0 7 4.5z"/></symbol>
+    <symbol id="i-stop" viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="2.5"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></symbol>
+    <symbol id="i-retry" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></symbol>
+    <symbol id="i-shield-alert" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="M12 8v4"/><path d="M12 16h.01"/></symbol>
+    <symbol id="i-activity" viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></symbol>
+    <symbol id="i-zap" viewBox="0 0 24 24"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
+    <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+    <symbol id="i-check-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></symbol>
+    <symbol id="i-x-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></symbol>
+    <symbol id="i-sheet" viewBox="0 0 24 24"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M8 13h2"/><path d="M14 13h2"/><path d="M8 17h2"/><path d="M14 17h2"/></symbol>
+    <symbol id="i-gauge" viewBox="0 0 24 24"><path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/></symbol>
+    <symbol id="i-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+    <symbol id="i-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+    <symbol id="i-external" viewBox="0 0 24 24"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></symbol>
+    <symbol id="i-fingerprint" viewBox="0 0 24 24"><path d="M12 10a2 2 0 0 0-2 2c0 1.02-.1 2.51-.26 4"/><path d="M14 13.12c0 2.38 0 6.38-1 8.88"/><path d="M17.29 21.02c.12-.6.43-2.3.5-3.02"/><path d="M2 12a10 10 0 0 1 18-6"/><path d="M2 16h.01"/><path d="M21.8 16c.2-2 .131-5.354 0-6"/><path d="M5 19.5C5.5 18 6 15 6 12a6 6 0 0 1 .34-2"/><path d="M8.65 22c.21-.66.45-1.32.57-2"/><path d="M9 6.8a6 6 0 0 1 9 5.2v2"/></symbol>
+    <symbol id="i-sparkles" viewBox="0 0 24 24"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></symbol>
+    <symbol id="i-clipboard" viewBox="0 0 24 24"><rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></symbol>
+    <symbol id="i-wifi-off" viewBox="0 0 24 24"><path d="M12 20h.01"/><path d="M8.5 16.43a5 5 0 0 1 7 0"/><path d="M2 8.82a15 15 0 0 1 4.17-2.65"/><path d="M10.66 5c4.01-.36 8.14.9 11.34 3.76"/><path d="M16.85 11.25a10 10 0 0 1 2.22 1.68"/><path d="M5 13a10 10 0 0 1 5.24-2.76"/><path d="m2 2 20 20"/></symbol>
+    <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></symbol>
+    <symbol id="i-tag" viewBox="0 0 24 24"><path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/></symbol>
+    <symbol id="i-hash" viewBox="0 0 24 24"><path d="M4 9h16"/><path d="M4 15h16"/><path d="M10 3 8 21"/><path d="M16 3l-2 18"/></symbol>
+    <symbol id="i-recycle" viewBox="0 0 24 24"><path d="M7 19H4.815a1.83 1.83 0 0 1-1.57-.881 1.785 1.785 0 0 1-.004-1.784L7.196 9.5"/><path d="M11 19h8.203a1.83 1.83 0 0 0 1.556-.89 1.784 1.784 0 0 0 0-1.775l-1.226-2.12"/><path d="m14 16-3 3 3 3"/><path d="M8.293 13.596 7.196 9.5 3.1 10.598"/><path d="m9.344 5.811 1.093-1.892A1.83 1.83 0 0 1 11.985 3a1.784 1.784 0 0 1 1.546.888l3.943 6.843"/><path d="m13.378 9.633 4.096 1.098 1.097-4.096"/></symbol>
+  </svg>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="#/catalog" aria-label="AwesomeBooks Scraper Pro">
+        <span class="brand-mark"><svg class="i"><use href="#i-book" /></svg></span>
+        <span class="brand-text"><span class="brand-name">AwesomeBooks</span><span class="brand-sub">Scraper&nbsp;Pro</span></span>
+      </a>
+
+      <nav class="switcher" aria-label="Modules">
+        <a href="#/catalog" data-nav="catalog"><svg class="i sm"><use href="#i-layers" /></svg><span>Catalog Extractor</span><i class="nav-dot"></i></a>
+        <a href="#/inventory" data-nav="inventory"><svg class="i sm"><use href="#i-package" /></svg><span>Stock Monitor</span><i class="nav-dot"></i></a>
+        <span class="switcher-glider" aria-hidden="true"></span>
+      </nav>
+
+      <div class="topbar-right">
+        <div class="locale" id="locale" title="Every price is what a US shopper pays: shipping country United States, US dollars">
+          <span class="flag" aria-hidden="true"></span><span id="localeText">Ship to US · USD</span>
+        </div>
+        <div class="engine" id="engine">
+          <span class="status-dot" id="engineDot"></span>
+          <div class="engine-text"><b id="engineTitle">Engine idle</b><span id="engineState">Ready</span></div>
+          <span class="engine-bar"><span id="engineBar"></span></span>
+        </div>
+        <button class="btn icon ghost" id="themeBtn" title="Toggle theme" aria-label="Toggle theme"><svg class="i sm"><use href="#i-sun" /></svg></button>
+      </div>
+    </div>
+  </header>
+
+  <main class="page">
+    <!-- ================= CATALOG ================= -->
+    <section class="view" data-view="catalog">
+      <header class="hero">
+        <div class="eyebrow"><span class="rule"></span>Catalog Extractor</div>
+        <h1>Extract an entire section of <em>AwesomeBooks</em></h1>
+        <p class="lede">Paste any section link: a category, Used, Bargain, New &amp; Trending, Bestsellers or a search. Every page is read, and each book gets its New and Used price for US shipping and its exact stock.</p>
+      </header>
+
+      <div class="grid">
+        <div class="card form-card span-7">
+          <div class="card-head">
+            <div class="card-title"><svg class="i"><use href="#i-link" /></svg>New extraction</div>
+            <span class="card-hint" id="catTransport"></span>
+          </div>
+          <label class="field-label" for="catUrl">Section link</label>
+          <div class="input-wrap lg">
+            <svg class="i"><use href="#i-globe" /></svg>
+            <input class="input" id="catUrl" name="url" type="url" spellcheck="false" autocomplete="off" placeholder="https://www.awesomebooks.com/used-books" />
+            <button class="btn sm ghost input-action" id="catPaste" title="Paste from clipboard"><svg class="i sm"><use href="#i-clipboard" /></svg>Paste</button>
+          </div>
+          <div class="field-error hidden" id="catUrlError"></div>
+          <div class="chips" id="catChips"></div>
+
+          <div class="options">
+            <div class="opt-group">
+              <div class="field-label">Sessions</div>
+              <div class="stepper" data-stepper="cat"><button type="button" data-step="-1" aria-label="Fewer">−</button><output id="catSessions">3</output><button type="button" data-step="1" aria-label="More">+</button></div>
+              <div class="opt-hint">Parallel shoppers, one shared pace</div>
+            </div>
+            <div class="opt-group">
+              <div class="field-label">Pace</div>
+              <div class="segmented" data-pace="cat"></div>
+              <div class="opt-hint" data-pace-hint="cat"></div>
+            </div>
+          </div>
+
+          <div class="toggles">
+            <label class="toggle"><input type="checkbox" id="catDetails" checked /><span class="switch"></span><span class="toggle-text"><b>New &amp; Used prices · exact stock</b><span>Opens each book like a shopper and clicks New and Used</span></span></label>
+            <label class="limit">
+              <span class="toggle-text"><b>Max books</b><span>Optional. Empty reads the whole section</span></span>
+              <input class="input num" id="catLimit" name="max_products" type="number" min="1" step="1" inputmode="numeric" placeholder="All" />
+            </label>
+          </div>
+
+          <div class="actions">
+            <button class="btn primary" id="catStart"><svg class="i sm"><use href="#i-play" /></svg>Start extraction</button>
+            <span class="busy-note hidden" data-busy-note><svg class="i sm"><use href="#i-alert" /></svg><span></span></span>
+          </div>
+        </div>
+
+        <div class="card run-card span-5" data-slot="run"></div>
+        <div class="card span-4" data-slot="guard"></div>
+        <div class="card span-8" data-slot="feed"></div>
+        <div class="card span-12" data-slot="table"></div>
+      </div>
+    </section>
+
+    <!-- ================= INVENTORY ================= -->
+    <section class="view hidden" data-view="inventory">
+      <header class="hero">
+        <div class="eyebrow"><span class="rule"></span>Stock Monitor</div>
+        <h1>Is it in stock, and <em>how many?</em></h1>
+        <p class="lede">Upload a CSV or Excel list of ISBNs. Each one is searched on AwesomeBooks like a shopper would, and reported In Stock with its exact New and Used quantities and prices, or Out of Stock.</p>
+      </header>
+
+      <div class="grid">
+        <div class="card form-card span-7">
+          <div class="card-head">
+            <div class="card-title"><svg class="i"><use href="#i-upload" /></svg>Upload ISBN list</div>
+            <a class="card-hint link" href="/static/ISBN_Upload_Template.xlsx" download>Download upload template</a>
+          </div>
+
+          <input type="file" id="invFile" name="file" accept=".csv,.xlsx,.xlsm,.txt,.tsv" hidden />
+          <div class="drop" id="invDrop" tabindex="0" role="button" aria-label="Upload file">
+            <div class="drop-icon"><svg class="i lg"><use href="#i-upload" /></svg></div>
+            <b>Drop your file here or <span class="link">browse</span></b>
+            <span>One ISBN per row. ISBN-10s are converted to ISBN-13, and hyphens and prefixes are handled.</span>
+            <div class="formats"><em>.csv</em><em>.xlsx</em><em>.txt</em></div>
+          </div>
+
+          <div class="hidden" id="invLoaded">
+            <div class="file-card">
+              <div class="file-icon"><svg class="i"><use href="#i-sheet" /></svg></div>
+              <div style="min-width:0;flex:1">
+                <div class="file-name" id="invFileName">file.csv</div>
+                <div class="file-sub" id="invFileSub"></div>
+              </div>
+              <button class="btn sm ghost" id="invReplace"><svg class="i sm"><use href="#i-upload" /></svg>Replace</button>
+            </div>
+            <div class="summary" id="invSummary"></div>
+          </div>
+
+          <div class="options">
+            <div class="opt-group">
+              <div class="field-label">Sessions</div>
+              <div class="stepper" data-stepper="inv"><button type="button" data-step="-1" aria-label="Fewer">−</button><output id="invSessions">3</output><button type="button" data-step="1" aria-label="More">+</button></div>
+              <div class="opt-hint">Parallel shoppers, one shared pace</div>
+            </div>
+            <div class="opt-group">
+              <div class="field-label">Pace</div>
+              <div class="segmented" data-pace="inv"></div>
+              <div class="opt-hint" data-pace-hint="inv"></div>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button class="btn primary" id="invStart" disabled><svg class="i sm"><use href="#i-play" /></svg>Start stock check</button>
+            <span class="busy-note hidden" data-busy-note><svg class="i sm"><use href="#i-alert" /></svg><span></span></span>
+          </div>
+        </div>
+
+        <div class="card run-card span-5" data-slot="run"></div>
+        <div class="card span-4" data-slot="guard"></div>
+        <div class="card span-8" data-slot="feed"></div>
+        <div class="card span-12" data-slot="table"></div>
+      </div>
+    </section>
+
+    <footer class="foot">
+      <span>AwesomeBooks Scraper Pro <b id="version">v1.0</b></span>
+      <span class="dot-sep"></span>
+      <span>Runs on this PC only · data stays in two SQLite files</span>
+      <span class="dot-sep"></span>
+      <span>Finished runs are saved to Downloads automatically</span>
+    </footer>
+  </main>
+
+  <dialog class="modal" id="confirmModal">
+    <div class="modal-body">
+      <h3 id="confirmTitle">Are you sure?</h3>
+      <p id="confirmText"></p>
+      <div class="modal-actions"><button class="btn" data-answer="no">Cancel</button><button class="btn danger" data-answer="yes" id="confirmYes">Delete</button></div>
+    </div>
+  </dialog>
+
+  <div class="toasts" id="toasts" aria-live="polite"></div>
+  <script src="/static/app.js"></script>
+</body>
+</html>
