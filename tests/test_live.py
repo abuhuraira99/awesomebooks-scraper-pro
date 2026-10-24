@@ -6,6 +6,7 @@ before a client run silently degrades. A handful of polite requests in total.
 
 import os
 import random
+import re
 
 import pytest
 
@@ -35,6 +36,7 @@ def test_book_page_in_us_dollars_with_both_conditions(site):
     assert record.new is not None and record.new.price and record.new.quantity and record.new.quantity > 0
     assert record.used is None or (record.used.price and record.used.price < record.new.price * 3)
     assert site.stats.locale_switches >= 1  # switched to "Ship to US" like a shopper
+    assert re.fullmatch(r"\w{3}, \w+ \d{1,2}( - \w{3}, \w+ \d{1,2})?", record.new.delivery or "")  # delivery window
 
 
 def test_search_finds_an_isbn(site):

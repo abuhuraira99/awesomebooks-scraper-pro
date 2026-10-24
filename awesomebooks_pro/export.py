@@ -32,6 +32,11 @@ QTY_NOTE = (
 PRICE_NOTE = (
     "What a US shopper pays on AwesomeBooks (shipping country United States, USD). The site states the price includes shipping."
 )
+DELIVERY_NOTE = (
+    "Standard worldwide delivery window AwesomeBooks quotes a US shopper on the book page for this condition, "
+    "as the site writes it (the site shows no year). Empty when that condition is not in stock. "
+    "The 'Order within …' countdown is the daily dispatch cut-off, so it is not saved."
+)
 AVAILABLE_NOTE = "Yes = this condition can be bought now. Blank = not checked (quick run without book pages)."
 
 HEADER_FILL = PatternFill("solid", fgColor="123B2F")
@@ -97,6 +102,20 @@ def _offer_columns(done: Callable[[dict[str, Any]], bool]) -> list[tuple[Column,
     return out
 
 
+def _delivery_columns(done: Callable[[dict[str, Any]], bool]) -> list[Column]:
+    """New / Used delivery windows. Added in v1.1 at the end of each sheet so earlier columns keep their place."""
+    return [
+        Column(
+            f"{label} Delivery",
+            34,
+            lambda r, p=prefix: r.get(f"{p}_delivery") if done(r) else None,
+            note=DELIVERY_NOTE,
+            fill=fill,
+        )
+        for prefix, label, fill in (("new", "New", NEW_FILL), ("used", "Used", USED_FILL))
+    ]
+
+
 def _catalog_done(r: dict[str, Any]) -> bool:
     return r.get("state") == "done"
 
@@ -129,6 +148,7 @@ CATALOG_LAYOUT: list[tuple[Column, bool]] = [
     (_col("Note", 30, "note"), True),
     (_col("Product URL", 42, "product_url", link=True), False),
     (_col("Image URL", 42, "image_url", link=True), False),
+    *[(col, True) for col in _delivery_columns(_catalog_done)],
 ]
 
 
@@ -170,6 +190,7 @@ INVENTORY_COLUMNS: list[Column] = [
     Column("Note", 32, lambda r: r.get("note") or (r.get("error") if r["state"] in ("invalid", "error") else None)),
     Column("Product URL", 42, lambda r: r.get("product_url"), link=True),
     Column("Checked At", 19, lambda r: _ts(r.get("checked_at"))),
+    *_delivery_columns(_inventory_done),
 ]
 
 

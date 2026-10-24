@@ -110,6 +110,10 @@ def test_both_conditions_are_read_from_their_own_pages(fake_site):
     assert (record.new.price, record.new.quantity) == (13.01, 1482)
     assert (record.used.price, record.used.quantity) == (8.84, 3)
     assert record.quantity == 1485 and record.in_stock
+    assert record.new.delivery == "Thu, November 5 - Tue, November 10"  # each condition's own window
+    assert record.used.delivery == "Tue, November 3 - Fri, November 6"
+    fields = record.fields()
+    assert (fields["new_delivery"], fields["used_delivery"]) == (record.new.delivery, record.used.delivery)
     assert record.title == "Both Conditions" and record.publisher == "Test House" and record.page_count == 321
 
 
@@ -124,6 +128,7 @@ def test_sold_out_and_unlisted(fake_site):
     site = client(fake_site)
     sold_out = site.product(ISBNS[3])
     assert sold_out.found and not sold_out.in_stock and sold_out.quantity == 0
+    assert sold_out.fields()["new_delivery"] is None and sold_out.fields()["used_delivery"] is None
     assert "Out of stock" in sold_out.notes[0]
     missing = site.product(ISBNS[5])
     assert not missing.found and missing.notes == ["Not listed on AwesomeBooks"]

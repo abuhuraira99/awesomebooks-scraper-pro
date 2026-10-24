@@ -2,6 +2,14 @@
 
 All notable changes to this project are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/).
 
+## [1.1.0] - 2026-10-24
+
+### Added
+- **Delivery window per condition**: two new Excel columns, **New Delivery** and **Used Delivery**, in both the Catalog Extractor and the Stock Monitor export. They hold the "Standard worldwide delivery by …" window the book page quotes a US shopper for that condition (e.g. *Thu, November 5 - Tue, November 10*), exactly as the site writes it. Used copies often ship sooner than New, so each condition is read from its own page. A condition that isn't in stock has no window. The "Order within …" countdown is the daily dispatch cut-off and is not saved.
+
+### Changed
+- Nothing else. The new columns are appended after the last existing column, so every v1.0 column keeps its position. Databases from v1.0 gain the two columns automatically on start-up; existing runs, including one that was interrupted, carry on unchanged.
+
 ## [1.0.0] - 2026-10-17
 
 ### Added

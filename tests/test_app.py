@@ -10,6 +10,50 @@ from openpyxl import load_workbook
 from tests.conftest import BASE, ISBNS, Book, FakeAwesomeBooks, build_env, make_books
 
 SECTION = "https://www.awesomebooks.com/books/category/303/test-fiction"
+# The v1.0 layouts the client's files already follow (v1.1 only appends columns after these).
+V10_CATALOG_HEADERS = [
+    "ISBN-13",
+    "Title",
+    "Author",
+    "Format",
+    "Availability",
+    "New Available",
+    "New Price (USD)",
+    "New Qty",
+    "Used Available",
+    "Used Price (USD)",
+    "Used Qty",
+    "RRP (USD)",
+    "Publisher",
+    "Publication Date",
+    "Pages",
+    "Dimensions",
+    "Weight",
+    "Category",
+    "Note",
+    "Product URL",
+    "Image URL",
+]
+V10_INVENTORY_HEADERS = [
+    "SKU",
+    "ISBN-13",
+    "Status",
+    "Quantity",
+    "New Available",
+    "New Price (USD)",
+    "New Qty",
+    "Used Available",
+    "Used Price (USD)",
+    "Used Qty",
+    "RRP (USD)",
+    "Title",
+    "Author",
+    "Format",
+    "Listed on AwesomeBooks",
+    "Note",
+    "Product URL",
+    "Checked At",
+]
 
 
 def wait_done(client, kind, job_id, timeout=30):
@@ -77,6 +121,8 @@ def test_catalog_end_to_end(app_env, tmp_path):
     headers, data, ws = sheet(c, "catalog", job_id)
     assert headers[:5] == ["ISBN-13", "Title", "Author", "Format", "Availability"]
     assert headers[5:11] == ["New Available", "New Price (USD)", "New Qty", "Used Available", "Used Price (USD)", "Used Qty"]
+    # v1.1 adds the delivery windows at the end: every v1.0 column keeps its exact position.
+    assert headers[:-2] == V10_CATALOG_HEADERS and headers[-2:] == ["New Delivery", "Used Delivery"]
     assert "ISBN10" not in " ".join(headers) and "ISBN-10" not in headers  # the client wants ISBN-13 only
     row = next(r for r in data if r["ISBN-13"] == ISBNS[0])
     assert (row["New Available"], row["New Price (USD)"], row["New Qty"]) == ("Yes", 13.01, 1482)
@@ -95,6 +141,7 @@ def test_catalog_quick_mode_uses_listing_data_only(app_env):
     assert p["status"] == "done" and p["total"] == 4
     headers, data, _ = sheet(c, "catalog", job_id)
     assert "New Qty" not in headers and "Publisher" not in headers and "New Price (USD)" in headers
+    assert "New Delivery" not in headers  # listing pages quote no delivery window
     row = next(r for r in data if r["ISBN-13"] == ISBNS[2])
     assert row["Used Price (USD)"] == 10.57 and row["New Available"] is None  # unknown, never "No"
 
@@ -246,6 +293,7 @@ def test_stock_check_end_to_end(app_env):
 
     headers, data, _ = sheet(c, "inventory", job_id)
     assert headers[:4] == ["SKU", "ISBN-13", "Status", "Quantity"]
+    assert headers[:-2] == V10_INVENTORY_HEADERS and headers[-2:] == ["New Delivery", "Used Delivery"]
     by_sku = {r["SKU"]: r for r in data}
     both = by_sku[ISBNS[0]]
     assert (both["Status"], both["Quantity"], both["New Qty"], both["Used Qty"]) == ("In Stock", 1485, 1482, 3)
@@ -315,3 +363,59 @@ def test_limit_parsing(value, expected):
     from awesomebooks_pro.web import _limit
 
     assert _limit(value) == expected
+
+
+def test_delivery_windows_reach_both_excel_files(app_env):
+    app, manager, site = app_env
+    site.books[ISBNS[4]].new_delivery = "Mon, November 9 - Thu, November 12"  # e.g. a pre-order
+    c = app.test_client()
+    job_id = start_catalog(c)
+    assert wait_done(c, "catalog", job_id)["status"] == "done"
+    _, data, ws = sheet(c, "catalog", job_id)
+    by_isbn = {r["ISBN-13"]: r for r in data}
+    assert (by_isbn[ISBNS[0]]["New Delivery"], by_isbn[ISBNS[0]]["Used Delivery"]) == (
+        "Thu, November 5 - Tue, November 10",
+        "Tue, November 3 - Fri, November 6",
+    )
+    assert by_isbn[ISBNS[1]]["Used Delivery"] is None  # New only: no Used window
+    assert by_isbn[ISBNS[2]]["New Delivery"] is None and by_isbn[ISBNS[2]]["Used Delivery"] == "Tue, November 3 - Fri, November 6"
+    assert by_isbn[ISBNS[4]]["New Delivery"] == "Mon, November 9 - Thu, November 12"
+    last = ws.cell(row=1, column=ws.max_column)
+    assert last.value == "Used Delivery" and "Order within" in last.comment.text
+
+    up = upload(c, "\n".join(["ISBN", ISBNS[0], ISBNS[3], ISBNS[0]]))
+    inv_id = up["job"]["id"]
+    c.post(f"/api/inventory/jobs/{inv_id}/start", json={})
+    assert wait_done(c, "inventory", inv_id)["status"] == "done"
+    _, rows_out, _ = sheet(c, "inventory", inv_id)
+    assert [(r["New Delivery"], r["Used Delivery"]) for r in rows_out] == [
+        ("Thu, November 5 - Tue, November 10", "Tue, November 3 - Fri, November 6"),
+        (None, None),  # sold out: no window
+        ("Thu, November 5 - Tue, November 10", "Tue, November 3 - Fri, November 6"),  # duplicate reuses the answer
+    ]
+
+
+def test_v1_0_databases_are_upgraded_in_place(tmp_path):
+    """A client PC upgrading from v1.0 keeps its runs; the new columns are added on start-up."""
+    import sqlite3
+
+    from awesomebooks_pro.storage import CatalogStore, InventoryStore
+
+    for cls, name in ((CatalogStore, "catalog.db"), (InventoryStore, "inventory.db")):
+        path = tmp_path / name
+        store = cls(path)
+        store.conn.execute("ALTER TABLE items DROP COLUMN new_delivery")
+        store.conn.execute("ALTER TABLE items DROP COLUMN used_delivery")
+        extra = {"url": "u", "section": "s"} if cls is CatalogStore else {"filename": "f.csv"}
+        job_id = store.create_job(sessions=1, pace="balanced", **extra)
+        store.insert_items(job_id, [{"isbn": ISBNS[0], "title": "Kept"}])
+        store.close()
+
+        reopened = cls(path)  # what the new version does when the app starts
+        columns = {row[1] for row in sqlite3.connect(path).execute("PRAGMA table_info(items)")}
+        assert {"new_delivery", "used_delivery"} <= columns
+        item = reopened.claim_next(job_id)
+        assert item["title"] == "Kept"
+        reopened.complete_item(item["id"], {"new_delivery": "Thu, November 5 - Tue, November 10"})
+        assert next(reopened.iter_items(job_id))["new_delivery"] == "Thu, November 5 - Tue, November 10"
+        reopened.close()

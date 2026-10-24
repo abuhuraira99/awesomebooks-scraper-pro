@@ -133,3 +133,21 @@ def test_money_and_condition_helpers():
 def test_listing_url_keeps_filters_and_omits_page_one():
     assert parsing.listing_url(f"{BASE}/used-books", {"format": "board book"}, 1) == f"{BASE}/used-books?format=board+book"
     assert parsing.listing_url(f"{BASE}/used-books", {}, 3) == f"{BASE}/used-books?page=3"
+
+
+def test_delivery_window_is_read_per_condition():
+    # Real pages (captured 2026-10-17): Used ships sooner than New; a sold-out page quotes no window.
+    assert product("product_new_with_used.html").delivery == "Thu, October 29 - Tue, November 3"
+    assert product("product_used.html").delivery == "Tue, October 27 - Fri, October 30"
+    assert product("product_new_only.html").delivery == "Thu, October 29 - Tue, November 3"
+    assert product("product_used_only.html").delivery == "Tue, October 27 - Fri, October 30"
+    assert product("product_out_of_stock.html").delivery is None
+
+
+def test_delivery_countdown_is_not_mistaken_for_the_window():
+    page = (
+        '<div class="mb-1"> Standard worldwide delivery by <span class="font-weight-bold"> Mon, November 9 - Thu, November 12 </span></div>'
+        '<div class="remaining-time"><span>Order within</span> <span id="remainingMinutesStandardDelivery">20 hrs</span></div>'
+    )
+    assert parsing.parse_product_page(page, BASE).delivery == "Mon, November 9 - Thu, November 12"
+    assert parsing.parse_product_page("<div>Delivery</div><span class='font-weight-bold'>Fast</span>", BASE).delivery is None

@@ -157,6 +157,7 @@ class ProductPage:
     image_url: str | None = None
     url: str | None = None  # canonical product URL
     sku: str | None = None
+    delivery: str | None = None  # "Thu, November 5 - Tue, November 10": the window quoted for ``condition``
 
     @property
     def in_stock(self) -> bool:
@@ -218,6 +219,23 @@ def _options(soup: BeautifulSoup, base_url: str) -> list[ConditionOption]:
             ConditionOption(label=label, url=urljoin(base_url, link["href"]), selected=bool(radio and radio.has_attr("checked")))
         )
     return options
+
+
+_DELIVERY_LABEL_RE = re.compile(r"\bdelivery by\b", re.I)
+
+
+def _delivery(soup: BeautifulSoup) -> str | None:
+    """The delivery window under the title: "Standard worldwide delivery by <b>Thu, November 5 - Tue, November 10</b>".
+
+    It is quoted for the condition being shown, and only while that condition is in stock. The
+    "Order within …" countdown below it is the daily dispatch cut-off, so it is not kept.
+    """
+    for label in soup.find_all(string=_DELIVERY_LABEL_RE):
+        window = label.parent.find(class_="font-weight-bold") if label.parent is not None else None
+        text = clean(window.get_text(" ")) if window is not None else None
+        if text and any(ch.isdigit() for ch in text):
+            return text
+    return None
 
 
 def _breadcrumb(soup: BeautifulSoup) -> str | None:
@@ -290,6 +308,7 @@ def parse_product_page(page: str, base_url: str = "https://www.awesomebooks.com"
         image_url=image[0] if isinstance(image, list) and image else (image or None),
         url=canonical.get("href") if canonical is not None and canonical.get("href") else clean(ld.get("url")),
         sku=sku_el.get("value") if sku_el is not None else None,
+        delivery=None if out_of_stock else _delivery(soup),
     )
 
 

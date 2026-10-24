@@ -113,6 +113,7 @@ class Offer:
     quantity: int | None  # exact stock; None only if the site published no number
     quantity_text: str | None
     url: str
+    delivery: str | None = None  # delivery window quoted for this condition, e.g. "Thu, November 5 - Tue, November 10"
 
     @property
     def available(self) -> bool:
@@ -159,6 +160,7 @@ class ProductRecord:
                 f"{prefix}_available": 1 if o is not None and o.available else 0,
                 f"{prefix}_price": o.price if o is not None and o.available else None,
                 f"{prefix}_qty": (o.quantity if o.available else 0) if o is not None else 0,
+                f"{prefix}_delivery": o.delivery if o is not None and o.available else None,
             }
 
         return {
@@ -343,7 +345,7 @@ class AwesomeBooksClient:
         offers: dict[str, Offer] = {}
         visited = {first.condition} if first.condition else set()
         if first.condition:
-            offers[first.condition] = Offer(first.price, first.quantity, first.quantity_text, start)
+            offers[first.condition] = Offer(first.price, first.quantity, first.quantity_text, start, first.delivery)
         if first.out_of_stock:
             record.notes.append("Out of stock on AwesomeBooks")
 
@@ -353,7 +355,7 @@ class AwesomeBooksClient:
             visited.add(option.label)
             other = parsing.parse_product_page(self.page(option.url, referer=start), self.base_url)
             if other.condition == option.label:
-                offers[option.label] = Offer(other.price, other.quantity, other.quantity_text, option.url)
+                offers[option.label] = Offer(other.price, other.quantity, other.quantity_text, option.url, other.delivery)
                 record.rrp = record.rrp or other.rrp
             # Otherwise the site redirected away: that condition has no stock right now.
 

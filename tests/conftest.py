@@ -69,6 +69,9 @@ class Book:
     sub: int = 11
     rank: int = 0
     rrp: float = 15.99
+    # Delivery window the book page quotes for each condition (Used usually ships sooner).
+    new_delivery: str = "Thu, November 5 - Tue, November 10"
+    used_delivery: str = "Tue, November 3 - Fri, November 6"
 
     def offers(self) -> dict[str, tuple[float, int]]:
         out = {}
@@ -258,10 +261,20 @@ class FakeAwesomeBooks:
         currency = "USD" if session.country == "US" else "GBP"
         script = f'<script>const currentObjectID = \'{isbn}\'; const currentCurrency = {{"symbol": "$", "currency": "{currency}"}};</script>'
         crumbs = '<nav class="breadcrumb"><a href="/books/category/303/fiction">Fiction</a><a href="#">Test fiction</a></nav>'
+        delivery = ""
+        if shown is not None:  # like the real page: only while the shown condition is in stock
+            window = book.new_delivery if shown == "New" else book.used_delivery
+            delivery = (
+                '<div class="row mb-2 pb-2 border-bottom border-gray"><div class="col-md-10 font-size-14">'
+                f'<div class="mb-1"> Standard worldwide delivery by <span class="font-weight-bold"> {window} </span></div>'
+                '<div class="remaining-time font-weight-bold text-dark-green"><span class="font-weight-normal text-black">'
+                'Order within</span> <span id="remainingMinutesStandardDelivery">0 </span></div></div></div>'
+                "<script>let standardDeliveryCountDownMinutes = 1157;</script>"
+            )
         return self.page(
             session,
             f"/book/{isbn}/{book.slug}",
-            f"{script}{crumbs}<h1>{html.escape(book.title)}</h1>{buttons}{buy}{details}",
+            f"{script}{crumbs}<h1>{html.escape(book.title)}</h1>{buttons}{delivery}{buy}{details}",
             head,
         )
 

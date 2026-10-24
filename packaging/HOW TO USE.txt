@@ -53,6 +53,9 @@ THE EXCEL COLUMNS
   - Quantity (stock check) = New Qty + Used Qty. 0 = out of stock or not listed.
   - Quantities are exact. The website shows "20+" to shoppers above 20; the
     scraper reads the real number from the site's own product data.
+  - New Delivery / Used Delivery (last two columns): the delivery dates the
+    book page shows a US shopper, e.g. "Thu, November 5 - Tue, November 10".
+    New and Used can differ. Empty when that condition is out of stock.
 
 GOOD TO KNOW
   - Only one job runs at a time.

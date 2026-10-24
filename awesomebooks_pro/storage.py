@@ -39,6 +39,9 @@ class JobStore:
         ("jobs", "heartbeat_at", "REAL"),
         ("jobs", "export_path", "TEXT"),
         ("jobs", "exported_at", "REAL"),
+        # v1.1: delivery window per condition (databases created by v1.0 get the columns on start-up).
+        ("items", "new_delivery", "TEXT"),
+        ("items", "used_delivery", "TEXT"),
     )
     LABEL = "Job"
 
@@ -328,7 +331,9 @@ OFFER_COLUMNS = """
         used_available INTEGER,
         used_price REAL,
         used_qty INTEGER,
-        rrp REAL
+        rrp REAL,
+        new_delivery TEXT,
+        used_delivery TEXT
 """
 BOOK_COLUMNS = """
         title TEXT,
@@ -440,6 +445,7 @@ class InventoryStore(JobStore):
         "stock_status", "found", "quantity", "title", "author", "format", "publisher", "publication_date",
         "page_count", "dimensions", "weight", "category", "image_url", "product_url", "new_available",
         "new_price", "new_qty", "used_available", "used_price", "used_qty", "rrp", "note", "checked_at",
+        "new_delivery", "used_delivery",
     )  # fmt: skip
 
     def _filter_sql(self, status: str | None) -> tuple[str, list[Any]]:

@@ -124,6 +124,7 @@ Every value comes from AwesomeBooks itself, as a US shopper sees it.
 | Category | The page's breadcrumb trail |
 | Note | e.g. *Out of stock on AwesomeBooks*, *Only offered as a rare / collectable copy* |
 | Product URL, Image URL | Links to the book and its cover |
+| New Delivery, Used Delivery | The delivery window the book page quotes a US shopper for that condition, e.g. *Thu, November 5 - Tue, November 10* (empty when that condition isn't in stock) |
 
 </details>
 
@@ -140,6 +141,7 @@ Every value comes from AwesomeBooks itself, as a US shopper sees it.
 | Title, Author, Format, RRP | As listed on AwesomeBooks |
 | Listed on AwesomeBooks | *No* only when the site sends a shopper to its home page instead of a book page |
 | Note, Product URL, Checked At | Context, link and timestamp of the check |
+| New Delivery, Used Delivery | As in the catalog export |
 
 </details>
 
